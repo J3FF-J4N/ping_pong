@@ -1,0 +1,103 @@
+use std::{error::Error, net::UdpSocket, time::Instant};
+
+
+const IP_JEFF: &'static str = "192.168.1.69:10520";
+const IP_ALEX: &'static str = "192.168.1.70:10520";
+
+const ROUNDTRIP_COUNT: usize = 50_000;
+
+fn main()  -> Result<(), Box<dyn Error>> {
+
+    let ip = IP_JEFF;
+
+    // let socket = UdpSocket::bind(IP_JEFF).expect("Unable to bind to socket ...");
+
+    
+
+    handle_connection();
+    
+
+    // println!("{:#?}", now);
+
+    // #[cfg(any(feature = "server", feature = "client"))]
+    if let ip = cfg!(feature = "server") {
+
+        let socket = UdpSocket::bind(IP_ALEX).expect("Unable to bind to socket ...");
+
+        let now = chrono::Utc::now();
+
+        let now = Instant::now();
+
+        
+
+        for idx in 0..= ROUNDTRIP_COUNT {
+            handle_connection();
+        }
+
+    } else {
+
+        let socket = UdpSocket::bind(IP_JEFF).expect("Unable to bind to socket ...");
+        for idx in 0..= ROUNDTRIP_COUNT {
+            handle_connection();
+        }
+        
+    }
+
+    // if ip.contains("70") {
+    //     // master_mode();
+    //     handle_connection();
+    // } else {
+    //     // echo_mode();
+    //     handle_connection();
+    // }
+
+    // socket.send(b"data").unwrap();
+
+
+
+    println!("Hello, world!");
+
+    Ok(())
+}
+
+fn handle_connection (){
+    let start_time = chrono::Local::now();
+}
+
+#[cfg(feature = "server")]
+fn handle_connection() {
+
+
+
+    println!("Server")
+}
+
+#[cfg(feature = "client")]
+fn handle_connection() {
+    println!("Client")
+}
+
+/*
+
+*/
+fn master_mode() {
+
+    #[cfg(feature = "server")]
+    let socket = UdpSocket::bind(IP_JEFF).expect("Unable to bind to socket ...");
+
+    #[cfg(feature = "client")]
+    {
+
+    }
+
+    let mut time_data_arr = [0; ROUNDTRIP_COUNT];
+
+
+
+}
+
+fn echo_mode() {
+
+    let mut log_buffer = String::default();
+    
+}
