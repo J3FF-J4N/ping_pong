@@ -1,17 +1,15 @@
-use std::{error::Error, net::UdpSocket, time::Instant};
+use std::error::Error;
 
 use shared::*;
 
-const IP_JEFF: &'static str = "192.168.1.69:10520";
-const ROUNDTRIP_COUNT: usize = 50_000;
+const IP_CLIENT: &'static str = "127.0.0.1:34254"; //"192.168.1.69:34254";
+
 
 mod shared;
 
 fn main()  -> Result<(), Box<dyn Error>> {
 
-    handle_connection(Side::Client(IP_JEFF)).unwrap();
-
-    println!("Hello, world!");
+    handle_connection(Side::Client(IP_CLIENT)).unwrap();
 
     Ok(())
 }
