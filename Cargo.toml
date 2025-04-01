@@ -9,3 +9,12 @@ chrono = "0.4.40"
 [features]
 client = []
 server = []
+
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
