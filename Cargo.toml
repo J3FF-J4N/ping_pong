@@ -1,3 +1,5 @@
+
+
 [package]
 name = "ping_pong"
 version = "0.1.0"
@@ -12,9 +14,9 @@ server = []
 
 
 [[bin]]
-name = "server"
-path = "src/server.rs"
+name = "echo"
+path = "src/echo.rs"
 
 [[bin]]
-name = "client"
-path = "src/client.rs"
+name = "master"
+path = "src/master.rs"
