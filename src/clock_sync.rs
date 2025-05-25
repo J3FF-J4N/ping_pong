@@ -21,15 +21,18 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
 
     let mut macro_signal = Gpio::new()?.get(23).unwrap().into_output();
 
+    macro_signal.set_low();
+
     let mut in_sync_signal = Gpio::new()?.get(24)?.into_output();
+
+    in_sync_signal.set_low();
 
     let mut in_sync = false;
 
     let mut data = [0; 256];
     loop {
         match socket.try_recv(&mut data[..]) {
-            Ok(n) => {
-                println!("received {:?}", &data[..n]);
+            Ok(_) => {
 
                 let message = ((data[0] as u64) << 56)
                     | ((data[1] as u64) << 48)
