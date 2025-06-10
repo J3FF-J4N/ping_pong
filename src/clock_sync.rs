@@ -7,7 +7,13 @@ use tokio::{
     time::interval,
 };
 
-const IP_ECHO: (Ipv4Addr, u16) = (Ipv4Addr::new(127, 0, 0, 1), 34254);
+// const IP_ECHO: (Ipv4Addr, u16) = (Ipv4Addr::new(127, 0, 0, 1), 34254);
+
+// const IP_ECHO: (Ipv4Addr, u16) = (Ipv4Addr::new(127, 0, 0, 1), 0);
+
+const IP_ECHO: (Ipv4Addr, u16) = (Ipv4Addr::new(0, 0, 0, 0), 12345);
+
+// const IP_ECHO: (Ipv4Addr, u16) = (Ipv4Addr::new(192, 168, 1, 3), 15000);
 
 pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
     let socket = UdpSocket::bind(IP_ECHO).await.unwrap();
@@ -34,6 +40,7 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
         match socket.try_recv(&mut data[..]) {
             Ok(_) => {
 
+                //Big Endian
                 let message = ((data[0] as u64) << 56)
                     | ((data[1] as u64) << 48)
                     | ((data[2] as u64) << 40)
@@ -43,13 +50,24 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
                     | ((data[6] as u64) << 8)
                     | data[7] as u64;
 
+                //Little Endian
+                // let message = ((data[7] as u64) << 56)
+                // | ((data[6] as u64) << 48)
+                // | ((data[5] as u64) << 40)
+                // | ((data[4] as u64) << 32)
+                // | ((data[3] as u64) << 24)
+                // | ((data[2] as u64) << 16)
+                // | ((data[1] as u64) << 8)
+                // | data[0] as u64;
+
+                    println!("{}",message);
                 last_macrotick_message = message;
 
                 let difference = current_macrotick as i128 - message as i128;
 
                 if difference.abs() > 1 {
                     current_macrotick = message;
-                    dbg!(&current_macrotick);
+                    // dbg!(&current_macrotick);
                     in_sync = true;
                 } else {
                     in_sync = true;
@@ -81,7 +99,7 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
                 }
             }
 
-            let difference = dbg!(current_macrotick - last_macrotick_message);
+            let difference = current_macrotick - last_macrotick_message;
 
             if difference > 50 && difference < 100 {
                 // todo!("log something");
@@ -92,6 +110,7 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
 
         if in_sync == true {
             in_sync_signal.set_high();
+            // println!("{}", true);
         } else {
             in_sync_signal.set_low();
         }
