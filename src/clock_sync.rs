@@ -36,6 +36,8 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
     let mut in_sync = false;
 
     let mut data = [0; 256];
+
+
     loop {
         match socket.try_recv(&mut data[..]) {
             Ok(_) => {
@@ -60,7 +62,7 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
                 // | ((data[1] as u64) << 8)
                 // | data[0] as u64;
 
-                    println!("{}",message);
+                // println!("{}",message);
                 last_macrotick_message = message;
 
                 let difference = current_macrotick as i128 - message as i128;
@@ -83,21 +85,13 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
         microtick.tick().await;
         current_microtick += 1;
 
+        // println!("{}", current_microtick);
+
         if current_microtick == 20 {
             current_macrotick += 1;
             current_microtick = 0;
 
             macro_signal.set_high();
-
-            if current_macrotick as f64 % 10.0 != 0.0 {
-                if current_microtick == 1 {
-                    macro_signal.set_low();
-                }
-            } else {
-                if current_microtick == 2 {
-                    macro_signal.set_low();
-                }
-            }
 
             let difference = current_macrotick - last_macrotick_message;
 
@@ -105,14 +99,36 @@ pub async fn clock_sync() -> Result<(), Box<dyn Error>> {
                 // todo!("log something");
             } else if difference >= 100 {
                 in_sync = false;
+            }    
+
+        }
+
+
+        if current_macrotick as f64 % 10.0 != 0.0 {
+            if current_microtick == 1 {
+                macro_signal.set_low();
+            }
+        } else {
+            if current_microtick == 2 {
+                macro_signal.set_low();
             }
         }
+
+
+        
+
+        // macro_signal.set_high();
+        // microtick.tick().await;
+        // macro_signal.set_low();
+
+        // println!("Test");
 
         if in_sync == true {
             in_sync_signal.set_high();
             // println!("{}", true);
         } else {
             in_sync_signal.set_low();
+            // println!("{}", false);
         }
     }
 }
